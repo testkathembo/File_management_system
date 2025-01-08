@@ -1,19 +1,14 @@
-import React from 'react';
-import DirectoryPage from './components/DirectoryPage'; // Import the main directory page component
-import './App.css';
+import React from "react";
+import "./App.css";
+import DirectoryPage from "./components/DirectoryPage";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>File Management System</h1>
-      </header>
-      <main>
-        {/* Main directory management page */}
-        <DirectoryPage />
-      </main>
-    </div>
-  );
+    return (
+        <div className="container mt-4">
+            <h1 className="text-center">File Management System</h1>
+            <DirectoryPage />
+        </div>
+    );
 }
 
 export default App;
