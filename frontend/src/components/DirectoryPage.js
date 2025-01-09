@@ -14,6 +14,7 @@ const DirectoryPage = () => {
   const [files, setFiles] = useState([]);
   const [currentDirectory, setCurrentDirectory] = useState(null);
   const [newDirectoryName, setNewDirectoryName] = useState('');
+  const [showUploadForm, setShowUploadForm] = useState(false); // Define state for showing/hiding upload form
 
   // Fetch directories and files for the current directory
   useEffect(() => {
@@ -160,14 +161,13 @@ const DirectoryPage = () => {
           </div>
 
           {/* File Upload Form */}
-          <FileUploadForm directoryId={currentDirectory?.id} />
           <div className="text-center mt-4">
-          <button
-            className="btn btn-success"
-            onClick={() => setShowUploadForm(true)}
-          >
-            Upload File
-          </button>
+            <button
+              className="btn btn-success"
+              onClick={() => setShowUploadForm(true)}
+            >
+              Upload File
+            </button>
           </div>
           {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
         </div>
