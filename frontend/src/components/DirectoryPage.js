@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   fetchDirectories,
-  fetchSubDirectories,
   fetchFiles,
+  deleteFile,
+  fetchSubDirectories,
   createDirectory,
   deleteDirectory,
-  deleteFile,
   renameDirectory,
-  updateFile,
 } from '../api';
+import FileDetailsDialog from './FileDetailsDialog';
 import FileUploadForm from './FileUploadForm';
 
 const DirectoryPage = () => {
@@ -18,9 +18,7 @@ const DirectoryPage = () => {
   const [newDirectoryName, setNewDirectoryName] = useState('');
   const [renameDirectoryId, setRenameDirectoryId] = useState(null);
   const [renameDirectoryName, setRenameDirectoryName] = useState('');
-  const [editingFileId, setEditingFileId] = useState(null);
-  const [editingFileName, setEditingFileName] = useState('');
-  const [editingFileDirectory, setEditingFileDirectory] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null); // For showing file details
   const [showUploadForm, setShowUploadForm] = useState(false);
 
   // Fetch directories and files for the current directory
@@ -34,6 +32,7 @@ const DirectoryPage = () => {
     }
   }, [currentDirectory]);
 
+  // Directory Handling Functions
   const handleCreateDirectory = () => {
     if (!newDirectoryName.trim()) {
       alert('Please enter a directory name.');
@@ -70,42 +69,19 @@ const DirectoryPage = () => {
     });
   };
 
-  const handleDeleteFile = (fileId) => {
-    deleteFile(fileId).then(() => {
-      alert('File deleted successfully!');
-      setFiles(files.filter((file) => file.id !== fileId));
-    });
+  // File Handling Functions
+  const handleFileDeleted = (fileId) => {
+    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
   };
 
-  const handleEditFile = (file) => {
-    setEditingFileId(file.id);
-    setEditingFileName(file.name);
-    setEditingFileDirectory(file.directory); // Set the current directory ID
+  const handleFileUpdated = (updatedFile) => {
+    setFiles((prevFiles) =>
+      prevFiles.map((file) => (file.id === updatedFile.id ? updatedFile : file))
+    );
   };
 
-  const handleSaveFileEdit = () => {
-    if (!editingFileName.trim()) {
-      alert('Please enter a valid file name.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('name', editingFileName);
-    formData.append('directory', editingFileDirectory);
-
-    updateFile(editingFileId, formData).then(() => {
-      alert('File updated successfully!');
-      setFiles(
-        files.map((file) =>
-          file.id === editingFileId
-            ? { ...file, name: editingFileName, directory: editingFileDirectory }
-            : file
-        )
-      );
-      setEditingFileId(null);
-      setEditingFileName('');
-      setEditingFileDirectory('');
-    });
+  const handleNavigateToParent = (parentDirectoryId) => {
+    setCurrentDirectory(directories.find((dir) => dir.id === parentDirectoryId) || null);
   };
 
   return (
@@ -215,95 +191,33 @@ const DirectoryPage = () => {
               <div className="card-header text-center">
                 <h2>Files</h2>
               </div>
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Directory</th>
-                    <th>Download</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {files.map((file) => (
-                    <tr key={file.id}>
-                      <td>
-                        {editingFileId === file.id ? (
-                          <input
-                            type="text"
-                            value={editingFileName}
-                            onChange={(e) => setEditingFileName(e.target.value)}
-                            className="form-control"
-                          />
-                        ) : (
-                          file.name
-                        )}
-                      </td>
-                      <td>
-                        {editingFileId === file.id ? (
-                          <select
-                            className="form-control"
-                            value={editingFileDirectory}
-                            onChange={(e) => setEditingFileDirectory(e.target.value)}
-                          >
-                            <option value="">Select Directory</option>
-                            {directories.map((dir) => (
-                              <option key={dir.id} value={dir.id}>
-                                {dir.name}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          file.directory_name || 'Unknown'
-                        )}
-                      </td>
-                      <td>
-                        <a
-                          href={file.file}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn btn-primary btn-sm"
-                        >
-                          Download
-                        </a>
-                      </td>
-                      <td>
-                        {editingFileId === file.id ? (
-                          <>
-                            <button
-                              className="btn btn-success btn-sm me-2"
-                              onClick={handleSaveFileEdit}
-                            >
-                              Save
-                            </button>
-                            <button
-                              className="btn btn-secondary btn-sm"
-                              onClick={() => {
-                                setEditingFileId(null);
-                                setEditingFileName('');
-                                setEditingFileDirectory('');
-                              }}
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                             <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleDeleteFile(file.id)}
-                            >
-                              Delete
-                            </button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ul className="list-group">
+                {files.map((file) => (
+                  <li
+                    key={file.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setSelectedFile(file)}
+                    >
+                      {file.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
+
+          {selectedFile && (
+            <FileDetailsDialog
+              file={selectedFile}
+              onClose={() => setSelectedFile(null)}
+              onFileDeleted={handleFileDeleted}
+              onFileUpdated={handleFileUpdated}
+              onNavigateToParent={handleNavigateToParent}
+            />
+          )}
 
           {/* File Upload Form */}
           <div className="text-center mt-4">
