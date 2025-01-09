@@ -6,9 +6,7 @@ import {
   createDirectory,
   deleteDirectory,
   deleteFile,
-  renameDirectory,
 } from '../api';
-import FileDetailsDialog from './FileDetailsDialog';
 import FileUploadForm from './FileUploadForm';
 
 const DirectoryPage = () => {
@@ -16,8 +14,6 @@ const DirectoryPage = () => {
   const [files, setFiles] = useState([]);
   const [currentDirectory, setCurrentDirectory] = useState(null);
   const [newDirectoryName, setNewDirectoryName] = useState('');
-  const [renameDirectoryId, setRenameDirectoryId] = useState(null);
-  const [renameDirectoryName, setRenameDirectoryName] = useState('');
 
   // Fetch directories and files for the current directory
   useEffect(() => {
@@ -38,7 +34,7 @@ const DirectoryPage = () => {
     createDirectory({ name: newDirectoryName, parent: currentDirectory?.id }).then(() => {
       alert('Directory created successfully!');
       setNewDirectoryName('');
-      fetchDirectories().then((res) => setDirectories(res.data)); // Refresh
+      fetchDirectories().then((res) => setDirectories(res.data));
     });
   };
 
@@ -46,30 +42,6 @@ const DirectoryPage = () => {
     deleteDirectory(directoryId).then(() => {
       alert('Directory deleted successfully!');
       setDirectories(directories.filter((dir) => dir.id !== directoryId));
-    });
-  };
-
-  const handleDeleteFile = (fileId) => {
-    deleteFile(fileId).then(() => {
-      alert('File deleted successfully!');
-      setFiles(files.filter((file) => file.id !== fileId));
-    });
-  };
-
-  const handleRenameDirectory = () => {
-    if (!renameDirectoryId || !renameDirectoryName.trim()) {
-      alert('Please select a directory and provide a new name.');
-      return;
-    }
-    renameDirectory(renameDirectoryId, { name: renameDirectoryName }).then(() => {
-      alert('Directory renamed successfully!');
-      setDirectories(
-        directories.map((dir) =>
-          dir.id === renameDirectoryId ? { ...dir, name: renameDirectoryName } : dir
-        )
-      );
-      setRenameDirectoryId(null);
-      setRenameDirectoryName('');
     });
   };
 
@@ -91,130 +63,93 @@ const DirectoryPage = () => {
           {!currentDirectory && <p className="text-center">You are in the Root Directory</p>}
 
           {/* Directories Section */}
-
-  <div className="card-body">
-    <div className="card w-50 mx-auto">
-      <div className="card-header text-center">
-        <h2>Directories</h2>
-      </div>
-      <div className="card-body">
-        <ul className="list-group">
-          {directories.map((dir) => (
-            <li
-              key={dir.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <button
-                className="btn btn-link"
-                onClick={() => setCurrentDirectory(dir)}
-              >
-                {dir.name}
-              </button>
-              <div>
-                <button
-                  className="btn btn-danger btn-sm me-2"
-                  onClick={() => handleDeleteDirectory(dir.id)}
-                >
-                  Delete
-                </button>
-                <button
-                  className="btn btn-warning btn-sm"
-                  onClick={() => setRenameDirectoryId(dir.id)}
-                >
-                  Rename
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <h3 className="text-center mt-3">Create New Directory</h3>
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="New Directory Name"
-            value={newDirectoryName}
-            onChange={(e) => setNewDirectoryName(e.target.value)}
-          />
-          <button className="btn btn-primary" onClick={handleCreateDirectory}>
-            Create Directory
-          </button>
-        </div>
-        {renameDirectoryId && (
-            <div className="card mb-3">
+          <div className="card-body">
+            <div className="card w-50 mx-auto">
               <div className="card-header text-center">
-                <h3>Rename Directory</h3>
+                <h2>Directories</h2>
               </div>
               <div className="card-body">
+                <ul className="list-group">
+                  {directories.map((dir) => (
+                    <li
+                      key={dir.id}
+                      className="list-group-item d-flex justify-content-between align-items-center"
+                    >
+                      <button
+                        className="btn btn-link"
+                        onClick={() => setCurrentDirectory(dir)}
+                      >
+                        {dir.name}
+                      </button>
+                      <div>
+                        <button
+                          className="btn btn-danger btn-sm me-2"
+                          onClick={() => handleDeleteDirectory(dir.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+
+                <h3 className="text-center mt-3">Create New Directory</h3>
                 <div className="input-group">
                   <input
                     type="text"
                     className="form-control"
                     placeholder="New Directory Name"
-                    value={renameDirectoryName}
-                    onChange={(e) => setRenameDirectoryName(e.target.value)}
+                    value={newDirectoryName}
+                    onChange={(e) => setNewDirectoryName(e.target.value)}
                   />
-                  <button className="btn btn-primary" onClick={handleRenameDirectory}>
-                    Save
-                  </button>
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      setRenameDirectoryId(null);
-                      setRenameDirectoryName('');
-                    }}
-                  >
-                    Cancel
+                  <button className="btn btn-primary" onClick={handleCreateDirectory}>
+                    Create Directory
                   </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+      </div>
+
+      {/* Files Section */}
+      <div className="card mt-4">
+        <div className="card-header text-center">
+          <h2>Files</h2>
+        </div>
+        <div className="card-body">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Directory</th>
+                <th>Download</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map((file) => (
+                <tr key={file.id}>
+                  <td>{file.id}</td>
+                  <td>{file.name}</td>
+                  <td>{file.directory_name || 'Unknown'}</td>
+                  <td>
+                    <a
+                      href={file.file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      Download
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>         
         </div>
       </div>
     </div>
-  </div>        
-
-    {/* Files Section */}
-<div className="card mb-3">
-  <div className="card-header text-center">
-    <h2>Files</h2>
-  </div>
-  <div className="card-body">
-    <div className="row">
-      {files.map((file) => (
-        <div key={file.id} className="col-md-4 col-sm-6 mb-4">
-          <div className="card h-100">
-            <div className="card-body text-center">
-              <h5 className="card-title">{file.name}</h5>
-              <p>
-                <strong>Download:</strong>{' '}
-                <a href={file.file} target="_blank" rel="noopener noreferrer">
-                  {file.name}
-                </a>
-              </p>
-              <FileDetailsDialog file={file} />
-              <button
-                className="btn btn-danger btn-sm mt-2"
-                onClick={() => handleDeleteFile(file.id)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-
-    {/* File Upload Form */}
-    <div className="mt-4">
-      <h3 className="text-center">Upload a File</h3>
-      <FileUploadForm directoryId={currentDirectory?.id} />
-    </div>
-  </div>
-</div>
-
   );
 };
 
