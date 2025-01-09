@@ -118,7 +118,6 @@ const DirectoryPage = () => {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Directory</th>
                 <th>Download</th>
@@ -127,7 +126,6 @@ const DirectoryPage = () => {
             <tbody>
               {files.map((file) => (
                 <tr key={file.id}>
-                  <td>{file.id}</td>
                   <td>{file.name}</td>
                   <td>{file.directory_name || 'Unknown'}</td>
                   <td>
