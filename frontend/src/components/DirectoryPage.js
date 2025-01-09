@@ -5,7 +5,7 @@ import {
   fetchFiles,
   createDirectory,
   deleteDirectory,
-  renameDirectory, // Ensure this is imported
+  deleteFile,
 } from '../api';
 import FileUploadForm from './FileUploadForm';
 
@@ -14,8 +14,6 @@ const DirectoryPage = () => {
   const [files, setFiles] = useState([]);
   const [currentDirectory, setCurrentDirectory] = useState(null);
   const [newDirectoryName, setNewDirectoryName] = useState('');
-  const [renameDirectoryId, setRenameDirectoryId] = useState(null);
-  const [renameDirectoryName, setRenameDirectoryName] = useState('');
 
   // Fetch directories and files for the current directory
   useEffect(() => {
@@ -47,20 +45,10 @@ const DirectoryPage = () => {
     });
   };
 
-  const handleRenameDirectory = () => {
-    if (!renameDirectoryId || !renameDirectoryName.trim()) {
-      alert('Please provide a new directory name.');
-      return;
-    }
-    renameDirectory(renameDirectoryId, { name: renameDirectoryName }).then(() => {
-      alert('Directory renamed successfully!');
-      setDirectories(
-        directories.map((dir) =>
-          dir.id === renameDirectoryId ? { ...dir, name: renameDirectoryName } : dir
-        )
-      );
-      setRenameDirectoryId(null);
-      setRenameDirectoryName('');
+  const handleDeleteFile = (fileId) => {
+    deleteFile(fileId).then(() => {
+      alert('File deleted successfully!');
+      setFiles(files.filter((file) => file.id !== fileId));
     });
   };
 
@@ -107,15 +95,6 @@ const DirectoryPage = () => {
                         >
                           Delete
                         </button>
-                        <button
-                          className="btn btn-warning btn-sm"
-                          onClick={() => {
-                            setRenameDirectoryId(dir.id);
-                            setRenameDirectoryName(dir.name);
-                          }}
-                        >
-                          Rename
-                        </button>
                       </div>
                     </li>
                   ))}
@@ -134,44 +113,13 @@ const DirectoryPage = () => {
                     Create Directory
                   </button>
                 </div>
-
-                {renameDirectoryId && (
-                  <div className="card mt-3">
-                    <div className="card-header text-center">
-                      <h3>Rename Directory</h3>
-                    </div>
-                    <div className="card-body">
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="New Directory Name"
-                          value={renameDirectoryName}
-                          onChange={(e) => setRenameDirectoryName(e.target.value)}
-                        />
-                        <button className="btn btn-primary" onClick={handleRenameDirectory}>
-                          Save
-                        </button>
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() => {
-                            setRenameDirectoryId(null);
-                            setRenameDirectoryName('');
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
 
           {/* Files Section */}
           <div className="card-body">
-            <div className="card w-50 mx-auto">
+            <div className="card w-40 mx-auto">
               <div className="card-header text-center">
                 <h2>Files</h2>
               </div>
@@ -181,6 +129,7 @@ const DirectoryPage = () => {
                     <th>Name</th>
                     <th>Directory</th>
                     <th>Download</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -195,8 +144,13 @@ const DirectoryPage = () => {
                           rel="noopener noreferrer"
                           className="btn btn-primary btn-sm"
                         >
-                          <i className="bi bi-download"></i> Download
+                          Download
                         </a>
+                      </td>
+                      <td>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDeleteFile(file.id)}>
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -204,6 +158,9 @@ const DirectoryPage = () => {
               </table>
             </div>
           </div>
+
+          {/* File Upload Form */}
+          <FileUploadForm directoryId={currentDirectory?.id} />
         </div>
       </div>
     </div>
