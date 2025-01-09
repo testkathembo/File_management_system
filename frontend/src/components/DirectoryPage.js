@@ -186,11 +186,21 @@ const DirectoryPage = () => {
           </div>
 
           {/* Files Section */}
+          {/* File Upload Form */}
+          <div className="text-center mt-4">
+            <button
+              className="btn btn-success"
+              onClick={() => setShowUploadForm(true)}
+            >
+              Upload File
+            </button>
+          </div>
           <div className="card-body">
             <div className="card w-50 mx-auto">
               <div className="card-header text-center">
                 <h2>Files</h2>
               </div>
+              {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
               <ul className="list-group">
                 {files.map((file) => (
                   <li
@@ -217,18 +227,7 @@ const DirectoryPage = () => {
               onFileUpdated={handleFileUpdated}
               onNavigateToParent={handleNavigateToParent}
             />
-          )}
-
-          {/* File Upload Form */}
-          <div className="text-center mt-4">
-            <button
-              className="btn btn-success"
-              onClick={() => setShowUploadForm(true)}
-            >
-              Upload File
-            </button>
-          </div>
-          {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
+          )}          
         </div>
       </div>
     </div>
