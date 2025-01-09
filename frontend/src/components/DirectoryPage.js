@@ -144,7 +144,7 @@ const DirectoryPage = () => {
                           rel="noopener noreferrer"
                           className="btn btn-primary btn-sm"
                         >
-                          D...
+                          Download
                         </a>
                       </td>
                       <td>
@@ -161,6 +161,15 @@ const DirectoryPage = () => {
 
           {/* File Upload Form */}
           <FileUploadForm directoryId={currentDirectory?.id} />
+          <div className="text-center mt-4">
+          <button
+            className="btn btn-success"
+            onClick={() => setShowUploadForm(true)}
+          >
+            Upload File
+          </button>
+          </div>
+          {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
         </div>
       </div>
     </div>
