@@ -109,15 +109,12 @@ const DirectoryPage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Files Section */}
-      <div className="card mt-4">
+           {/* Files Section */}
+          <div className="card-body">
+      <div className="card w-40 max-auto">
         <div className="card-header text-center">
           <h2>Files</h2>
         </div>
-        <div className="card-body">
           <table className="table table-striped">
             <thead>
               <tr>
@@ -146,11 +143,13 @@ const DirectoryPage = () => {
                 </tr>
               ))}
             </tbody>
-          </table>         
+          </table>   
+        </div>        
         </div>
       </div>
+      </div>     
     </div>
-  );
+    );
 };
 
 export default DirectoryPage;
