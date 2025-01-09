@@ -144,7 +144,7 @@ const DirectoryPage = () => {
                           rel="noopener noreferrer"
                           className="btn btn-primary btn-sm"
                         >
-                          Download
+                          D...
                         </a>
                       </td>
                       <td>
