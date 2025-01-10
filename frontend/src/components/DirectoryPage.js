@@ -18,7 +18,7 @@ const DirectoryPage = () => {
   const [renameDirectoryId, setRenameDirectoryId] = useState(null);
   const [renameDirectoryName, setRenameDirectoryName] = useState('');
   const [selectedFile, setSelectedFile] = useState(null); // For showing file details
-  const [showUploadForm, setShowUploadForm] = useState(false);
+  const [showUploadForm, setShowUploadForm] = useState(false); // Toggle upload form
 
   // Fetch directories and files for the current directory
   useEffect(() => {
@@ -31,7 +31,7 @@ const DirectoryPage = () => {
     }
   }, [currentDirectory]);
 
-  // Directory Handling Functions
+  // Create a new directory
   const handleCreateDirectory = () => {
     if (!newDirectoryName.trim()) {
       alert('Please enter a directory name.');
@@ -44,6 +44,7 @@ const DirectoryPage = () => {
     });
   };
 
+  // Delete a directory
   const handleDeleteDirectory = (directoryId) => {
     deleteDirectory(directoryId)
       .then(() => {
@@ -54,15 +55,15 @@ const DirectoryPage = () => {
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
-          alert(error.response.data.detail || 'This Directoy is not empty. Hence it cannot be deleted.'); // Show backend error message
+          alert(error.response.data.error || 'Cannot delete a non-empty directory.');
         } else {
           console.error('Failed to delete directory:', error);
-          alert('An unexpected error occurred. Please try again later.');
+          alert('An unexpected error occurred.');
         }
       });
   };
-  
 
+  // Rename a directory
   const handleRenameDirectory = () => {
     if (!renameDirectoryId || !renameDirectoryName.trim()) {
       alert('Please enter a valid name for the directory.');
@@ -80,19 +81,9 @@ const DirectoryPage = () => {
     });
   };
 
-  // File Handling Functions
+  // File deletion handler (for file details dialog)
   const handleFileDeleted = (fileId) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
-  };
-
-  const handleFileUpdated = (updatedFile) => {
-    setFiles((prevFiles) =>
-      prevFiles.map((file) => (file.id === updatedFile.id ? updatedFile : file))
-    );
-  };
-
-  const handleNavigateToParent = (parentDirectoryId) => {
-    setCurrentDirectory(directories.find((dir) => dir.id === parentDirectoryId) || null);
   };
 
   return (
@@ -102,6 +93,7 @@ const DirectoryPage = () => {
           <h1>{currentDirectory ? `Directory: ${currentDirectory.name}` : 'Root Directory'}</h1>
         </div>
         <div className="card-body">
+          {/* Button to go to parent directory */}
           {currentDirectory && (
             <button
               className="btn btn-secondary mb-3"
@@ -111,6 +103,13 @@ const DirectoryPage = () => {
             </button>
           )}
           {!currentDirectory && <p className="text-center">You are in the Root Directory</p>}
+
+          {/* Button to go to the High-Level Page */}
+          <div className="text-center mb-3">
+            <a href="/high-level" className="btn btn-info">
+              View High-Level Directories and Files
+            </a>
+          </div>
 
           {/* Directories Section */}
           <div className="card-body">
@@ -151,7 +150,6 @@ const DirectoryPage = () => {
                     </li>
                   ))}
                 </ul>
-
                 <h3 className="text-center mt-3">Create New Directory</h3>
                 <div className="input-group">
                   <input
@@ -165,7 +163,6 @@ const DirectoryPage = () => {
                     Create Directory
                   </button>
                 </div>
-
                 {renameDirectoryId && (
                   <div className="mt-3">
                     <h4>Rename Directory</h4>
@@ -197,21 +194,11 @@ const DirectoryPage = () => {
           </div>
 
           {/* Files Section */}
-          {/* File Upload Form */}
-          <div className="text-center mt-4">
-            <button
-              className="btn btn-success"
-              onClick={() => setShowUploadForm(true)}
-            >
-              Upload File
-            </button>
-          </div>
           <div className="card-body">
             <div className="card w-50 mx-auto">
               <div className="card-header text-center">
                 <h2>Files</h2>
               </div>
-              {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
               <ul className="list-group">
                 {files.map((file) => (
                   <li
@@ -230,15 +217,25 @@ const DirectoryPage = () => {
             </div>
           </div>
 
+          {/* File Upload Form */}
+          <div className="text-center mt-4">
+            <button
+              className="btn btn-success"
+              onClick={() => setShowUploadForm(!showUploadForm)}
+            >
+              {showUploadForm ? 'Hide Upload Form' : 'Upload File'}
+            </button>
+          </div>
+          {showUploadForm && <FileUploadForm directoryId={currentDirectory?.id} />}
+
+          {/* File Details Dialog */}
           {selectedFile && (
             <FileDetailsDialog
               file={selectedFile}
               onClose={() => setSelectedFile(null)}
               onFileDeleted={handleFileDeleted}
-              onFileUpdated={handleFileUpdated}
-              onNavigateToParent={handleNavigateToParent}
             />
-          )}          
+          )}
         </div>
       </div>
     </div>

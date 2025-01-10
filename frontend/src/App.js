@@ -1,14 +1,17 @@
 import React from "react";
-import "./App.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import DirectoryPage from "./components/DirectoryPage";
+import HighLevelPage from "./components/HighLevelPage";
 
-function App() {
-    return (
-        <div className="container mt-4" >
-            <h1 className="text-center">File Management System</h1>
-            <DirectoryPage />
-        </div>
-    );
-}
+const App = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={DirectoryPage} />
+        <Route path="/high-level" component={HighLevelPage} />
+      </Switch>
+    </Router>
+  );
+};
 
 export default App;
