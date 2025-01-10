@@ -14,8 +14,6 @@ API.interceptors.response.use(
   }
 );
 
-/** Directory Endpoints **/
-
 // Fetch all directories
 export const fetchDirectories = () => API.get('/directories/');
 
@@ -46,6 +44,7 @@ export const fetchHighLevelDirectoriesAndFiles = async () => {
 // Fetch files in a specific directory
 export const fetchFiles = (directoryId) =>
   API.get(directoryId ? `/directories/${directoryId}/files` : '/files/');
+
 
 // Upload a file to a specific directory
 export const uploadFile = (formData) =>

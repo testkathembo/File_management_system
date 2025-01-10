@@ -5,7 +5,7 @@ import {
   fetchSubDirectories,
   createDirectory,
   deleteDirectory,
-  renameDirectory,  
+  renameDirectory,
 } from '../api';
 import FileDetailsDialog from './FileDetailsDialog';
 import FileUploadForm from './FileUploadForm';
@@ -199,25 +199,7 @@ const DirectoryPage = () => {
               <div className="card-header text-center">
                 <h2>Files</h2>
               </div>
-              <ul className="list-group">
-                {files.map((file) => (
-                  <li
-                    key={file.id}
-                    className="list-group-item d-flex justify-content-between align-items-center"
-                  >
-                    <button
-                      className="btn btn-link"
-                      onClick={() => setSelectedFile(file)}
-                    >
-                      {file.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* File Upload Form */}
+              {/* File Upload Form */}
           <div className="text-center mt-4">
             <button
               className="btn btn-success"
@@ -236,7 +218,24 @@ const DirectoryPage = () => {
               onFileDeleted={handleFileDeleted}
             />
           )}
-        </div>
+              <ul className="list-group">
+                {files.map((file) => (
+                  <li
+                    key={file.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
+                    <button
+                      className="btn btn-link"
+                      onClick={() => setSelectedFile(file)}
+                    >
+                      {file.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          </div>
       </div>
     </div>
   );
