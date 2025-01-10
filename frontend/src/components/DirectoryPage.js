@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   fetchDirectories,
   fetchFiles,
-  deleteFile,
   fetchSubDirectories,
   createDirectory,
   deleteDirectory,
@@ -46,11 +45,23 @@ const DirectoryPage = () => {
   };
 
   const handleDeleteDirectory = (directoryId) => {
-    deleteDirectory(directoryId).then(() => {
-      alert('Directory deleted successfully!');
-      setDirectories(directories.filter((dir) => dir.id !== directoryId));
-    });
+    deleteDirectory(directoryId)
+      .then(() => {
+        alert('Directory deleted successfully!');
+        setDirectories((prevDirectories) =>
+          prevDirectories.filter((dir) => dir.id !== directoryId)
+        );
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.detail || 'This Directoy is not empty. Hence it cannot be deleted.'); // Show backend error message
+        } else {
+          console.error('Failed to delete directory:', error);
+          alert('An unexpected error occurred. Please try again later.');
+        }
+      });
   };
+  
 
   const handleRenameDirectory = () => {
     if (!renameDirectoryId || !renameDirectoryName.trim()) {
