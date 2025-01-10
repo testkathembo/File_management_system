@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 09, 2025 at 09:03 AM
+-- Generation Time: Jan 10, 2025 at 09:54 AM
 -- Server version: 11.5.2-MariaDB
 -- PHP Version: 8.2.12
 
@@ -120,7 +120,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$870000$tvg620H0IVzIRpA811aeyV$CP1pZQcApNPoUqSX2dwKAqglAYw3kIk7M4MUrBdC7Rw=', '2025-01-09 06:36:51.972103', 1, 'admin', '', '', 'admin@gmail.com', 1, 1, '2025-01-09 06:36:27.858019');
+(1, 'pbkdf2_sha256$870000$tvg620H0IVzIRpA811aeyV$CP1pZQcApNPoUqSX2dwKAqglAYw3kIk7M4MUrBdC7Rw=', '2025-01-09 08:08:31.926365', 1, 'admin', '', '', 'admin@gmail.com', 1, 1, '2025-01-09 06:36:27.858019');
 
 -- --------------------------------------------------------
 
@@ -252,7 +252,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('3051nw52knsh0mwo2ny4huua3t3fkdpn', '.eJxVjEEOwiAQRe_C2hAQhnZcuu8ZyACDVA0kpV0Z765NutDtf-_9l_C0rcVvnRc_J3ERWpx-t0DxwXUH6U711mRsdV3mIHdFHrTLqSV-Xg_376BQL9_aBUeONBtAO2LK0WrKwGewiiJYowEpYsgmYUaXhjxEBkvsQOFISov3B-xNOBM:1tVm9z:VACwqORobh41qUPIOp6Uie_vMwxkYSj592QhWcy3c10', '2025-01-23 06:36:51.978564');
+('7m5flc27jdjss2zlk5vl655n9qy8j0d3', '.eJxVjEEOwiAQRe_C2hAQhnZcuu8ZyACDVA0kpV0Z765NutDtf-_9l_C0rcVvnRc_J3ERWpx-t0DxwXUH6U711mRsdV3mIHdFHrTLqSV-Xg_376BQL9_aBUeONBtAO2LK0WrKwGewiiJYowEpYsgmYUaXhjxEBkvsQOFISov3B-xNOBM:1tVnah:iFq6iGAQIKtjKSQZlMJFy10BkxEIbMxlsVFZYuimVII', '2025-01-23 08:08:31.931176');
 
 -- --------------------------------------------------------
 
@@ -272,9 +272,7 @@ CREATE TABLE `files_directory` (
 
 INSERT INTO `files_directory` (`id`, `name`, `parent_id`) VALUES
 (1, 'Kathembo', NULL),
-(7, 'Tsongo', NULL),
-(10, 'My Directory', NULL),
-(11, 'My Dir1', 10);
+(10, 'My Directory 2', NULL);
 
 -- --------------------------------------------------------
 
@@ -295,10 +293,9 @@ CREATE TABLE `files_file` (
 --
 
 INSERT INTO `files_file` (`id`, `name`, `file`, `created_at`, `directory_id`) VALUES
-(9, 'gipo', 'uploads/Gender_Portrayal_in_Ekegusii_Proverbs_aLorPdd.pdf', '2025-01-08 15:36:20.678754', 1),
-(11, 'yyyy', 'uploads/Dedications_for_families_06A3O5d.docx', '2025-01-08 17:15:22.570366', 7),
 (12, 'my file', 'uploads/Dedications_for_families_0F2F5DQ.docx', '2025-01-09 06:37:48.058376', 10),
-(13, 'My marks', 'uploads/Preface_by_the_major_superior.docx', '2025-01-09 07:21:46.559001', 1);
+(13, 'My marks', 'uploads/Preface_by_the_major_superior.docx', '2025-01-09 07:21:46.559001', 1),
+(17, 'Jongo file', 'uploads/Grace_filled_Journeys_Love_Faith__HOlQYeN.pdf', '2025-01-09 12:19:41.415973', 1);
 
 --
 -- Indexes for dumped tables
@@ -453,13 +450,13 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT for table `files_directory`
 --
 ALTER TABLE `files_directory`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `files_file`
 --
 ALTER TABLE `files_file`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
