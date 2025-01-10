@@ -41,25 +41,20 @@ class DirectoryViewSet(viewsets.ModelViewSet):
         """
         Endpoint to list all high-level directories and their associated files.
         """
-        try:
-            directories = Directory.objects.filter(parent__isnull=True).prefetch_related('files')
-            directory_data = [
-                {
-                    "id": directory.id,
-                    "name": directory.name,
-                    "files": FileSerializer(directory.files.all(), many=True).data
-                }
-                for directory in directories
-            ]
-            return Response({
-                "status": "success",
-                "data": directory_data,
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({
-                "status": "error",
-                "error": str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        directories = Directory.objects.filter(parent__isnull=True).prefetch_related('files')
+        directory_data = [
+            {
+                "id": directory.id,
+                "name": directory.name,
+                "files": FileSerializer(directory.files.all(), many=True).data
+            }
+            for directory in directories
+        ]
+
+        return Response({
+            "status": "success",
+            "data": directory_data,
+        })
 
 
 class FileViewSet(viewsets.ModelViewSet):
@@ -77,17 +72,10 @@ class FileViewSet(viewsets.ModelViewSet):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
-
-        try:
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            return Response({
-                "status": "success",
-                "data": serializer.data,
-                "message": "File updated successfully!"
-            }, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({
-                "status": "error",
-                "error": str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response({
+            "status": "success",
+            "data": serializer.data,
+            "message": "File updated successfully!"
+        })

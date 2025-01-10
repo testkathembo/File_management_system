@@ -35,8 +35,11 @@ export const renameDirectory = (directoryId, data) =>
 // Delete a directory (only if empty)
 export const deleteDirectory = (directoryId) => API.delete(`/directories/${directoryId}/`);
 
-// Fetch high-level directories and their files
-export const fetchHighLevelDirectoriesAndFiles = () => API.get('/directories/high-level/');
+
+export const fetchHighLevelDirectoriesAndFiles = async () => {
+  return await API.get('/directories/high-level/');
+};
+
 
 /** File Endpoints **/
 

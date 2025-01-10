@@ -7,18 +7,15 @@ const HighLevelPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch high-level directories and files
     fetchHighLevelDirectoriesAndFiles()
       .then((res) => {
-        console.log('High-Level Directories:', res.data); // Debugging
-        setData(res.data);
+        console.log('High-level directories data:', res.data); // Log the data
+        setData(res.data.data); // Ensure you're accessing the "data" key from the API response
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching high-level directories:', err); // Debugging
-        setError(
-          err.response?.data?.error || 'Failed to fetch directories. Please try again later.'
-        );
+        console.error('Error fetching high-level directories:', err);
+        setError('Failed to fetch directories. Please try again later.');
         setLoading(false);
       });
   }, []);
@@ -51,7 +48,7 @@ const HighLevelPage = () => {
             <h5>{directory.name}</h5>
           </div>
           <div className="card-body">
-            {directory.files && directory.files.length > 0 ? (
+            {directory.files.length > 0 ? (
               <ul className="list-group">
                 {directory.files.map((file) => (
                   <li

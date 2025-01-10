@@ -5,7 +5,7 @@ import {
   fetchSubDirectories,
   createDirectory,
   deleteDirectory,
-  renameDirectory,
+  renameDirectory,  
 } from '../api';
 import FileDetailsDialog from './FileDetailsDialog';
 import FileUploadForm from './FileUploadForm';
